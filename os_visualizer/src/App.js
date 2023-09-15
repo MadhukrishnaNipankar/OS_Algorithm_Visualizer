@@ -1,8 +1,17 @@
 import "./App.css";
+import LandingPage from "./Pages/LandingPage";
 
 function App() {
   return (
-    <div className="App">Hello Devendra ! This is Madhukrishna Nipankar</div>
+    <div
+      className="App"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <LandingPage />
+    </div>
   );
 }
 
