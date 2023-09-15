@@ -1,0 +1,20 @@
+
+.main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #de3c53;
+    margin: 1rem 18rem;
+    padding: 1rem 1rem;
+    border: 0.5px solid #dfdfdf;
+    background-image: url('../assets/images/images.jfif');
+   
+    font-size: 2rem;
+    color: white;
+    box-shadow: inset 0px 0px 3px 0px white;
+    border-radius: 0.6rem;
+}
+
+body{
+    background-image: url('../assets/images/153688502._UY200_CR8\,0\,200\,200_.jpg');
+}
