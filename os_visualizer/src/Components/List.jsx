@@ -1,10 +1,15 @@
-import React from 'react'
-import Algorithm_Card from './Algorithm_Card'
+import React, { useState } from 'react'
+import Algorithm_Card from './AlgorithmCard'
 
 export default function List() {
+
+    const [i,seti]=useState(false);
+
+    const doit = ()=>{
+        seti(!i);
+    }
+
   return (
-    <div>
-      <Algorithm_Card name={"FCFS"}/>
-    </div>
+    <></>
   )
 }

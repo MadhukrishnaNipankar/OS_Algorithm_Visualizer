@@ -1,0 +1,16 @@
+
+
+
+.head{
+    background-color: #d0d0c7;
+    padding: 1rem 0rem;
+    border-radius: 0.4rem;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
