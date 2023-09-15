@@ -1,5 +1,6 @@
 import "./App.css";
-import LandingPage from "./Pages/LandingPage";
+// import LandingPage from "./Pages/LandingPage";
+// import InputPage from "./Pages/InputPage";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
         justifyContent: "center",
       }}
     >
-      <LandingPage />
+      {/* <LandingPage />
+      <InputPage /> */}
     </div>
   );
 }
