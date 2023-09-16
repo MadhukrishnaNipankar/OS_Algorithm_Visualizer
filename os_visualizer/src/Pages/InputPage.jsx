@@ -31,6 +31,7 @@ function InputPage() {
   const execute = () => {
     localStorage.setItem("data", JSON.stringify(parentData));
     console.log(JSON.parse(localStorage.getItem("data")));
+    console.log("EXE");
     FCFS();
     setResultData(JSON.parse(localStorage.getItem("fcfsResult")));
     // navigate("/charts");
@@ -65,13 +66,16 @@ function InputPage() {
   };
 
   function FCFS() {
+
+    console.log("FUNCTION CALL");
     let Time = 0;
     const p = JSON.parse(localStorage.getItem("data"));
     console.log("mi", p);
     p.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
     for (let i = 0; i < p.length; i++) {
-      while (p[i].arrivalTime !== Time) Time++;
+
+      while (p[i].arrivalTime > Time) Time++;
 
       p[i].startTime = Time;
       p[i].endTime = Time + p[i].burstTime;
@@ -88,6 +92,7 @@ function InputPage() {
       );
     }
     localStorage.setItem("fcfsResult", JSON.stringify(p));
+    console.log("FUNCTION DONE");
   }
 
   const handleChange = (event) => {
