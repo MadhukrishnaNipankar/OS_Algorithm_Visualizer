@@ -8,23 +8,42 @@ function InputPage() {
 
   //   for handling temporary change of input fields
   const [data, setData] = useState({
-    pid: "",
-    arrivalTime: "",
-    burstTime: "",
-    priority: "",
+    pid: 0,
+    arrivalTime: 0,
+    burstTime: 0,
+    priority: 0,
+    waitTime:0,
+    startTime:0,
+    endTime:0,
+    remainTime:0,
+    turnAroundTime:0,
   });
+
+  const visualize = ()=>{
+    localStorage.setItem("data", JSON.stringify(parentData));
+    console.log(JSON.parse(localStorage.getItem("data")));
+   
+    FCFS();
+  }
 
   const addProcess = () => {
     setParentData([...parentData, data]);
     // set parentData to localStorage
-    localStorage.setItem("data", JSON.stringify(parentData));
-    console.log(JSON.parse(localStorage.getItem("data")));
+    // localStorage.setItem("data", JSON.stringify(parentData));
+    // console.log(JSON.parse(localStorage.getItem("data")));
     setData({
-      pid: "",
-      arrivalTime: "",
-      burstTime: "",
-      priority: "",
+      pid: 0,
+      arrivalTime: 0,
+      burstTime: 0,
+      priority: 0,
+      waitTime:0,
+      startTime:0,
+      endTime:0,
+      remainTime:0,
+      turnAroundTime:0,
     });
+
+    
   };
 
   const clearAllData = () => {
@@ -32,14 +51,79 @@ function InputPage() {
       !window.confirm("Are You Sure you want to clear all the added processes?")
     )
       return;
-
+    
+    localStorage.clear();
     setParentData([]);
   };
+
+
+
+  
+function FCFS() {
+    
+    let Time = 0;
+  const p = JSON.parse(localStorage.getItem("data"));
+    console.log("mi",p);
+    p.sort((a, b) => a.arrivalTime - b.arrivalTime);
+
+    while(p[0].arrivalTime!==Time)Time++;
+   
+    for (let i = 0; i < p.length; i++) {
+        p[i].startTime = Time;
+        p[i].endTime = Time + p[i].burstTime;
+        Time += p[i].burstTime;
+        p[i].turnAroundTime = p[i].endTime - p[i].arrivalTime;
+        p[i].waitTime = p[i].turnAroundTime - p[i].burstTime;
+        console.log(p[i]);
+    }
+
+    console.log("pid\t\tSt\t\tEt\t\tTaT\t\tWt");
+    for (let i = 0; i < p.length; i++) {
+        console.log(` ${p[i].pid}\t\t${p[i].startTime}\t\t${p[i].endTime}\t\t${p[i].turnAroundTime}\t\t${p[i].waitTime}`);
+    }
+    localStorage.setItem("fcfsResult",JSON.stringify(p));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleChange = (event) => {
     setData({
       ...data,
-      [event.target.name]: event.target.value,
+      [event.target.name]: parseFloat(event.target.value),
     });
   };
 
@@ -199,6 +283,7 @@ function InputPage() {
           type="button"
           className="btn btn-success m-2 "
           style={{ width: "10rem" }}
+          onClick={visualize}
         >
           Visualize
         </button>
