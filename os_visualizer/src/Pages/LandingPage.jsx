@@ -1,7 +1,8 @@
 import React from "react";
- 
+import { useNavigate } from "react-router";
 
 function LandingPage() {
+  const navigate = useNavigate();
   return (
     <div
       className="card my-5 mx-3 shadow p-3 mb-5 bg-white rounded"
@@ -24,6 +25,9 @@ function LandingPage() {
         type="button"
         className="btn btn-danger my-2"
         style={{ width: "10rem" }}
+        onClick={() => {
+          navigate("/algo");
+        }}
       >
         Get Started
       </button>
