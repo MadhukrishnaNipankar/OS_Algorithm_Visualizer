@@ -1,5 +1,5 @@
-import React from "react";
-import style from "../styles/chart.module.css";
+import React, { useEffect } from "react";
+import stl from "../styles/chart.module.css";
 
 import {
   LineChart,
@@ -16,52 +16,14 @@ import {
 import { PureComponent } from "react";
 import { BarChart, Bar, Cell } from "recharts";
 import { RadialBarChart, RadialBar } from "recharts";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 export default function Chart() {
-  const data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  const data = JSON.parse(localStorage.getItem("fcfsResult"));
+
+  useEffect(() => {
+    console.log(data);
+  }, []);
 
   const style = {
     top: "50%",
@@ -71,19 +33,13 @@ export default function Chart() {
   };
 
   return (
-    <div className={style.Main}>
+    <div className={stl.Main}>
       <div
-        style={{
-          backgroundColor: "#d0d0c7",
-          padding: "1rem 0rem",
-          borderRadius: "0.4rem",
-          fontSize: "1.5rem",
-          MarginTop: "2rem",
-        }}
+        className={stl.head}
       >
-        Graphs
+        Scheduling Report 
       </div>
-      <div className={style.main}>
+      <div className={stl.main}>
         <div style={{ display: "flex" }}>
           <div
             className="card my-5 mx-3 shadow p-3 mb-5 bg-white rounded"
@@ -109,17 +65,18 @@ export default function Chart() {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="pid" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
                 <Line
                   type="monotone"
-                  dataKey="pv"
+                  dataKey="startTime"
                   stroke="#8884d8"
                   activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="arrivalTime" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="priority" stroke="rgb(216, 132, 132)" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -148,14 +105,20 @@ export default function Chart() {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="pid" />
                 <YAxis />
                 <Tooltip />
                 <Area
                   type="monotone"
-                  dataKey="uv"
+                  dataKey="startTime"
                   stroke="#8884d8"
                   fill="#8884d8"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="endTime"
+                  stroke="rgb(216 132 132)"
+                  fill="rgb(216 132 132)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -187,13 +150,13 @@ export default function Chart() {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="pid" />
                 <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
                 <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                 <Tooltip />
                 <Legend />
-                <Bar yAxisId="left" dataKey="pv" fill="#8884d8" />
-                <Bar yAxisId="right" dataKey="uv" fill="#82ca9d" />
+                <Bar yAxisId="left" dataKey="waitTime" fill="#8884d8" />
+                <Bar yAxisId="right" dataKey="turnAroundTime" fill="#82ca9d" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -220,19 +183,22 @@ export default function Chart() {
               >
                 <RadialBar
                   minAngle={15}
-                  label={{ position: "insideStart", fill: "#fff" }}
+                  label={{ position: "insideStart", fill: "#8884d8" }}
                   background
                   clockWise
-                  dataKey="uv"
+                  dataKey="burstTime"
                 />
                 <Legend
                   iconSize={10}
                   layout="vertical"
                   verticalAlign="middle"
                   wrapperStyle={style}
+                  dataKey="pid"
+                  name="pid"
                 />
               </RadialBarChart>
             </ResponsiveContainer>
+            <p>Brust Time Time</p>
           </div>
         </div>
 
@@ -248,7 +214,34 @@ export default function Chart() {
               width: "38rem",
             }}
           >
-            <h1 className="my-2">Algo.Visualizer</h1>
+            <div style={{ width: "100%" }}>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart
+                  width={500}
+                  height={200}
+                  data={data}
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="pid" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="waitTime"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+              <p>Wait Time</p>
+               
+            </div>
           </div>
 
           <div
@@ -262,7 +255,16 @@ export default function Chart() {
               width: "38rem",
             }}
           >
-            <h1 className="my-2">Algo.Visualizer</h1>
+
+          <ResponsiveContainer width="100%" height="100%">
+        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+          <PolarGrid />
+          <PolarAngleAxis dataKey="pid" />
+          <PolarRadiusAxis/>
+          <Radar name="Mike" dataKey="turnAroundTime" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+        </RadarChart>
+      </ResponsiveContainer>
+      <p>Turn Around Time</p>
           </div>
         </div>
       </div>

@@ -16,10 +16,10 @@ function App() {
     >
       {/* <LandingPage /> */}
       {/* <ListPage/> */}
-      {/* <Chart/> */}
+      <Chart/>
 
       {/* <LandingPage  */}
-      <InputPage />
+      {/* <InputPage /> */}
     </div>
   );
 }
