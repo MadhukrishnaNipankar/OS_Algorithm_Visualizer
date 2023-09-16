@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import AlgorithmCard from '../Components/AlgorithmCard';
-import style from '../styles/card.module.css';
-import Button from 'react-bootstrap/Button';
+import React, { useState } from "react";
+import AlgorithmCard from "../Components/AlgorithmCard";
+import style from "../styles/card.module.css";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router";
 
 export default function ListPage() {
+  const navigate = useNavigate();
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(0);
 
   const handleAlgorithmClick = (id) => {
@@ -23,7 +25,7 @@ export default function ListPage() {
           width: "94vw",
           backgroundRepeat: "no-repeat",
           backgroundSize: "100%",
-          overflow: "auto"
+          overflow: "auto",
         }}
       >
         <h2 className={style.header}>OS Algorithms</h2>
@@ -58,9 +60,17 @@ export default function ListPage() {
           isSelected={selectedAlgorithm === 6}
         />
       </div>
-      <Button variant="success" style={{
-        padding: "0.5rem 2rem"
-}}>NEXT</Button>{" "}
+      <Button
+        variant="success"
+        style={{
+          padding: "0.5rem 2rem",
+        }}
+        onClick={() => {
+          navigate("/input");
+        }}
+      >
+        NEXT
+      </Button>{" "}
     </div>
   );
 }

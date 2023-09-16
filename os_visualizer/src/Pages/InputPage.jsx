@@ -1,10 +1,13 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 function InputPage() {
+  const navigate = useNavigate();
   // for storing complete data that is added
   const [parentData, setParentData] = useState([]);
+  const [resultData, setResultData] = useState([]);
 
   //   for handling temporary change of input fields
   const [data, setData] = useState({
@@ -12,19 +15,26 @@ function InputPage() {
     arrivalTime: 0,
     burstTime: 0,
     priority: 0,
-    waitTime:0,
-    startTime:0,
-    endTime:0,
-    remainTime:0,
-    turnAroundTime:0,
+    waitTime: 0,
+    startTime: 0,
+    endTime: 0,
+    remainTime: 0,
+    turnAroundTime: 0,
   });
 
-  const visualize = ()=>{
+  useEffect(() => {
+    if (localStorage.getItem("data")) {
+      setParentData(JSON.parse(localStorage.getItem("data")));
+    }
+  }, []);
+
+  const execute = () => {
     localStorage.setItem("data", JSON.stringify(parentData));
     console.log(JSON.parse(localStorage.getItem("data")));
-   
     FCFS();
-  }
+    setResultData(JSON.parse(localStorage.getItem("fcfsResult")));
+    // navigate("/charts");
+  };
 
   const addProcess = () => {
     setParentData([...parentData, data]);
@@ -36,14 +46,12 @@ function InputPage() {
       arrivalTime: 0,
       burstTime: 0,
       priority: 0,
-      waitTime:0,
-      startTime:0,
-      endTime:0,
-      remainTime:0,
-      turnAroundTime:0,
+      waitTime: 0,
+      startTime: 0,
+      endTime: 0,
+      remainTime: 0,
+      turnAroundTime: 0,
     });
-
-    
   };
 
   const clearAllData = () => {
@@ -51,74 +59,36 @@ function InputPage() {
       !window.confirm("Are You Sure you want to clear all the added processes?")
     )
       return;
-    
+
     localStorage.clear();
     setParentData([]);
   };
 
-
-
-  
-function FCFS() {
-    
+  function FCFS() {
     let Time = 0;
-  const p = JSON.parse(localStorage.getItem("data"));
-    console.log("mi",p);
+    const p = JSON.parse(localStorage.getItem("data"));
+    console.log("mi", p);
     p.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
-    while(p[0].arrivalTime!==Time)Time++;
-   
     for (let i = 0; i < p.length; i++) {
-        p[i].startTime = Time;
-        p[i].endTime = Time + p[i].burstTime;
-        Time += p[i].burstTime;
-        p[i].turnAroundTime = p[i].endTime - p[i].arrivalTime;
-        p[i].waitTime = p[i].turnAroundTime - p[i].burstTime;
-        console.log(p[i]);
+      while (p[i].arrivalTime !== Time) Time++;
+
+      p[i].startTime = Time;
+      p[i].endTime = Time + p[i].burstTime;
+      Time += p[i].burstTime;
+      p[i].turnAroundTime = p[i].endTime - p[i].arrivalTime;
+      p[i].waitTime = p[i].turnAroundTime - p[i].burstTime;
+      console.log(p[i]);
     }
 
     console.log("pid\t\tSt\t\tEt\t\tTaT\t\tWt");
     for (let i = 0; i < p.length; i++) {
-        console.log(` ${p[i].pid}\t\t${p[i].startTime}\t\t${p[i].endTime}\t\t${p[i].turnAroundTime}\t\t${p[i].waitTime}`);
+      console.log(
+        ` ${p[i].pid}\t\t${p[i].startTime}\t\t${p[i].endTime}\t\t${p[i].turnAroundTime}\t\t${p[i].waitTime}`
+      );
     }
-    localStorage.setItem("fcfsResult",JSON.stringify(p));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    localStorage.setItem("fcfsResult", JSON.stringify(p));
+  }
 
   const handleChange = (event) => {
     setData({
@@ -283,9 +253,9 @@ function FCFS() {
           type="button"
           className="btn btn-success m-2 "
           style={{ width: "10rem" }}
-          onClick={visualize}
+          onClick={execute}
         >
-          Visualize
+          Execute
         </button>
         <button
           onClick={clearAllData}
@@ -295,6 +265,69 @@ function FCFS() {
         >
           ↻ Clear All
         </button>
+      </div>
+
+      <h5>Result</h5>
+      {/* result process table */}
+      <div
+        className="my-2 p-2"
+        style={
+          parentData.length
+            ? { display: "block", maxHeight: "20rem", overflow: "auto" }
+            : { display: "none" }
+        }
+      >
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Process Id</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+              <th>Priority</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Wait Time</th>
+              <th>Turn Around Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {resultData.map((process) => {
+              return (
+                <>
+                  <tr>
+                    <td>{process.pid}</td>
+                    <td>{process.arrivalTime}</td>
+                    <td>{process.burstTime} units</td>
+                    <td>{process.priority}</td>
+                    <td>{process.startTime}</td>
+                    <td>{process.endTime}</td>
+                    <td>{process.waitTime}</td>
+                    <td>{process.turnAroundTime}</td>
+                  </tr>
+                </>
+              );
+            })}
+          </tbody>
+        </Table>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            className="btn btn-outline-success m-2 "
+            style={{ width: "10rem" }}
+          >
+            Visualize
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-dark m-2 "
+            style={{ width: "10rem" }}
+            onClick={() => {
+              navigate("/charts");
+            }}
+          >
+            View Reports
+          </button>
+        </div>
       </div>
     </div>
   );
