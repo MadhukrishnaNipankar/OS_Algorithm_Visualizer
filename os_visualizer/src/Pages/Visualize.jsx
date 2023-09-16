@@ -5,7 +5,6 @@ function Visualize() {
   const [readyQueue, setReadyQueue] = useState([]);
   const [ganttChart, setganttChart] = useState([]);
 
-
   const changeTime = async (increment) => {
     const newTime = globleTime + increment;
     await setGlobleTime(newTime);
@@ -18,34 +17,26 @@ function Visualize() {
 
     const newReadyQueue = data.filter((item) => item.arrivalTime <= time);
     setReadyQueue(newReadyQueue);
-   
   };
 
-  
-
-   
   useEffect(() => {
-   fillReadyQueue(globleTime);
+    fillReadyQueue(globleTime);
   }, [globleTime]);
-
 
   // const fillReadyQueue = () => {
   //   const data = JSON.parse(localStorage.getItem("fcfsResult"));
   //   data.sort((a,b)=>(a.arrivalTime-b.arrivalTime));
   //   setReadyQueue([]);
-  
-   
+
   //   for (let i = 0; i < data.length; i++) {
   //     if (data[i].arrivalTime <= globleTime) {
-       
+
   //        setReadyQueue([...readyQueue, data[i]]);
   //     }
   //   }
-    
+
   //   console.log(globleTime,readyQueue);
   // };
-
-
 
   return (
     <div
@@ -130,43 +121,57 @@ function Visualize() {
             ⇠
           </div>
           {/* Ready Queue */}
-          <div>
+          <div
+            style={{
+              overflow: "hidden" /* Hide the scrollbar */,
+            }}
+          >
             <p>Ready Queue</p>
             <div
+              id="readyQueueContainer"
               style={{
                 borderRadius: "0.4rem",
+                overflowX: "auto",
                 backgroundColor: "black",
                 height: "3rem",
+                width: "18rem",
                 display: "flex",
                 flexDirection: "row",
                 color: "white",
-                alignItems: "center",
+                // alignItems: "center",
               }}
             >
               {/* processes */}
 
-              {readyQueue.map((process)=>{
-                return(
+              {readyQueue.map((process) => {
+                // Get the container element by ID
+                const container = document.getElementById(
+                  "readyQueueContainer"
+                );
+
+                // Scroll to the end of the container
+                container.scrollLeft = container.scrollWidth;
+                return (
                   <>
-                  <h5
-                style={{
-                  width: "3rem",
-                  height: "85%",
-                  backgroundColor: "#5454c1",
-                  margin: "auto 0.25rem",
-                  borderRadius: "0.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-              P{process.pid}
-              </h5>
+                    <h5
+                      style={{
+                        width: "3rem",
+                        minWidth: "3rem",
+                        flexWrap: "wrap",
+                        height: "85%",
+                        backgroundColor: "#5454c1",
+                        margin: "auto 0.25rem",
+                        borderRadius: "0.2rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      P{process.pid}
+                    </h5>
                   </>
-                )
+                );
               })}
-             
-               
             </div>
           </div>
         </div>
@@ -277,10 +282,22 @@ function Visualize() {
 
       {/* next and prev buttons */}
       <div style={{ display: "flex" }}>
-        <button type="button" className="mb-4 mx-3 btn btn-info" onClick={()=>{changeTime(-1)}}>
+        <button
+          type="button"
+          className="mb-4 mx-3 btn btn-info"
+          onClick={() => {
+            changeTime(-1);
+          }}
+        >
           Prev
         </button>
-        <button type="button" className="mb-4 mx-3 btn btn-info" onClick={()=>{changeTime(1)}}>
+        <button
+          type="button"
+          className="mb-4 mx-3 btn btn-info"
+          onClick={() => {
+            changeTime(1);
+          }}
+        >
           Next
         </button>
       </div>

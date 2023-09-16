@@ -32,12 +32,15 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
 ::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  scrollbar-width: thin;
+  height: 5px;
+  background-color: rgb(218, 217, 217);
+  border-radius: 0.2rem;
 }
