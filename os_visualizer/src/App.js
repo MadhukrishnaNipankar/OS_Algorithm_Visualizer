@@ -7,6 +7,7 @@ import InputPage from "./Pages/InputPage";
 
 // Router
 import { Routes, Route } from "react-router-dom";
+import Visualize from "./Pages/Visualize";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/algo" element={<ListPage />} />
         <Route path="/input" element={<InputPage />} />
         <Route path="/charts" element={<Chart />} />
+        <Route path="/visualize" element={<Visualize />} />
       </Routes>
     </div>
   );

@@ -66,7 +66,6 @@ function InputPage() {
   };
 
   function FCFS() {
-
     console.log("FUNCTION CALL");
     let Time = 0;
     const p = JSON.parse(localStorage.getItem("data"));
@@ -74,7 +73,6 @@ function InputPage() {
     p.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
     for (let i = 0; i < p.length; i++) {
-
       while (p[i].arrivalTime > Time) Time++;
 
       p[i].startTime = Time;
@@ -319,6 +317,9 @@ function InputPage() {
             type="button"
             className="btn btn-outline-success m-2 "
             style={{ width: "10rem" }}
+            onClick={() => {
+              navigate("/visualize");
+            }}
           >
             Visualize
           </button>
