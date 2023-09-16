@@ -16,7 +16,13 @@ import {
 import { PureComponent } from "react";
 import { BarChart, Bar, Cell } from "recharts";
 import { RadialBarChart, RadialBar } from "recharts";
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+} from "recharts";
 
 export default function Chart() {
   const data = JSON.parse(localStorage.getItem("fcfsResult"));
@@ -34,11 +40,7 @@ export default function Chart() {
 
   return (
     <div className={stl.Main}>
-      <div
-        className={stl.head}
-      >
-        Scheduling Report 
-      </div>
+      <div className={stl.head}>Scheduling Report</div>
       <div className={stl.main}>
         <div style={{ display: "flex" }}>
           <div
@@ -76,7 +78,11 @@ export default function Chart() {
                   activeDot={{ r: 8 }}
                 />
                 <Line type="monotone" dataKey="arrivalTime" stroke="#82ca9d" />
-                <Line type="monotone" dataKey="priority" stroke="rgb(216, 132, 132)" />
+                <Line
+                  type="monotone"
+                  dataKey="priority"
+                  stroke="rgb(216, 132, 132)"
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -237,10 +243,16 @@ export default function Chart() {
                     stroke="#8884d8"
                     fill="#8884d8"
                   />
+
+                  <Line
+                    type="monotone"
+                    dataKey="turnAroundTime"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                  />
                 </LineChart>
               </ResponsiveContainer>
               <p>Wait Time</p>
-               
             </div>
           </div>
 
@@ -255,16 +267,21 @@ export default function Chart() {
               width: "38rem",
             }}
           >
-
-          <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="pid" />
-          <PolarRadiusAxis/>
-          <Radar name="Mike" dataKey="turnAroundTime" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-        </RadarChart>
-      </ResponsiveContainer>
-      <p>Turn Around Time</p>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="pid" />
+                <PolarRadiusAxis />
+                <Radar
+                  name="Mike"
+                  dataKey="turnAroundTime"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+            <p>Turn Around Time</p>
           </div>
         </div>
       </div>

@@ -67,7 +67,7 @@ function InputPage() {
 
   function FCFS() {
 
-    console.log("FUNCTION CALL");
+    
     let Time = 0;
     const p = JSON.parse(localStorage.getItem("data"));
     console.log("mi", p);
@@ -82,17 +82,19 @@ function InputPage() {
       Time += p[i].burstTime;
       p[i].turnAroundTime = p[i].endTime - p[i].arrivalTime;
       p[i].waitTime = p[i].turnAroundTime - p[i].burstTime;
-      console.log(p[i]);
+      
     }
 
+    
     console.log("pid\t\tSt\t\tEt\t\tTaT\t\tWt");
     for (let i = 0; i < p.length; i++) {
       console.log(
         ` ${p[i].pid}\t\t${p[i].startTime}\t\t${p[i].endTime}\t\t${p[i].turnAroundTime}\t\t${p[i].waitTime}`
       );
     }
+
     localStorage.setItem("fcfsResult", JSON.stringify(p));
-    console.log("FUNCTION DONE");
+   
   }
 
   const handleChange = (event) => {
