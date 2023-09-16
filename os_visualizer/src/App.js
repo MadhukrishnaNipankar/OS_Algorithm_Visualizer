@@ -14,13 +14,12 @@ function App() {
         justifyContent: "center",
       }}
     >
-   {/* <LandingPage /> */}
-   {/* <ListPage/> */}
-   <Chart/>
+      {/* <LandingPage /> */}
+      {/* <ListPage/> */}
+      {/* <Chart/> */}
 
-   {/* <LandingPage  */}
-    {/* <InputPage />  */}
-  
+      {/* <LandingPage  */}
+      <InputPage />
     </div>
   );
 }

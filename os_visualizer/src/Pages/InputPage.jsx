@@ -16,7 +16,9 @@ function InputPage() {
 
   const addProcess = () => {
     setParentData([...parentData, data]);
-
+    // set parentData to localStorage
+    localStorage.setItem("data", JSON.stringify(parentData));
+    console.log(JSON.parse(localStorage.getItem("data")));
     setData({
       pid: "",
       arrivalTime: "",
