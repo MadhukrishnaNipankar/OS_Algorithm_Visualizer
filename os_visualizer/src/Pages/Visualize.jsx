@@ -6,11 +6,48 @@ function Visualize() {
   const [readyQueue, setReadyQueue] = useState([]);
   const [ganttChart, setganttChart] = useState([]);
   const [process, setProcess] = useState();
+  const [instance, setInstance] = useState([]);
 
   const changeTime = (increment) => {
-    const newglobleTime = globleTime + increment;
-    setglobleTime(newglobleTime);
-    fillReadyQueue(newglobleTime);
+    if (increment > 0) {
+      const newglobleTime = globleTime + increment;
+      setglobleTime(newglobleTime);
+      fillReadyQueue(newglobleTime);
+
+      const currentInstance = {
+        globleTime: globleTime,
+        readyQueue: readyQueue,
+        ganttChart: ganttChart,
+        process: process,
+      };
+
+      setInstance((prevInstance) => [...prevInstance, currentInstance]);
+      console.log("current instance : --->", instance);
+      return;
+    } else {
+
+      
+      const newglobleTime = globleTime + increment;
+      if (newglobleTime < 0) {
+        return;
+      }
+
+      if (instance.length > 1) {
+        const previousStateInstance = instance[instance.length - 2];
+
+        setglobleTime(previousStateInstance.globleTime);
+        setReadyQueue(previousStateInstance.readyQueue);
+        setganttChart(previousStateInstance.ganttChart);
+        setProcess(previousStateInstance.process);
+
+        localStorage.setItem("fcfsResult", JSON.stringify(readyQueue));
+
+        setInstance((prevInstance) => {
+          const newInstance = prevInstance.slice(0, -1);
+          return newInstance;
+        });
+      }
+    }
   };
 
   const fillReadyQueue = (time) => {
@@ -68,9 +105,8 @@ function Visualize() {
   };
 
   useEffect(() => {
-    fillReadyQueue(globleTime);
-  }, []);
-
+  }, [globleTime, readyQueue, ganttChart, process, instance]);
+  
   return (
     <div
       style={{
@@ -270,6 +306,7 @@ function Visualize() {
                      <h6>EndTime:{process.endTime}</h6>
                     </div>
                   </Popup>
+                  
                 </>
               );
             })}
