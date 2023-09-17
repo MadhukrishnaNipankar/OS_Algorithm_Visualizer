@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import Popup from "reactjs-popup";
 
 function Visualize() {
-  const [ globleTime  ,setglobleTime ] = useState(0) ;
+  const [globleTime, setglobleTime] = useState(0);
   const [readyQueue, setReadyQueue] = useState([]);
   const [ganttChart, setganttChart] = useState([]);
   const [process, setProcess] = useState();
@@ -23,29 +24,20 @@ function Visualize() {
   };
 
   const HandleProcess = (readyQueue) => {
-
-    console.log("Process",process);
+    console.log("Process", process);
 
     if (process) {
       const data = process;
       data.remainTime--;
 
-
-      if ( data.remainTime <= 0) {
-
+      if (data.remainTime <= 0) {
         setProcess();
         setganttChart((prevGanttChart) => [...prevGanttChart, data]);
 
-
         if (readyQueue.length !== 0) {
           AddTOProcess(readyQueue);
-        }  
-
-
-      }  
-
-
-
+        }
+      }
     } else {
       if (readyQueue.length !== 0) {
         AddTOProcess(readyQueue);
@@ -56,32 +48,29 @@ function Visualize() {
   };
 
   const AddTOProcess = (readyQueue1) => {
-     
-       
-      const data =  readyQueue1[0];
-      data.remainTime  = data.burstTime;
-      setProcess(data);
-      // Filter out the first element
-      readyQueue1.shift();
+    const data = readyQueue1[0];
+    data.remainTime = data.burstTime;
+    setProcess(data);
+    // Filter out the first element
+    readyQueue1.shift();
 
-      const List = JSON.parse(localStorage.getItem('fcfsResult'));
-      for(let i=0;i<List.length;i++)
-      {
-        if(data.pid===List[i].pid)
-        {
-           List[i].isdone=true;
-        }
+    const List = JSON.parse(localStorage.getItem("fcfsResult"));
+    for (let i = 0; i < List.length; i++) {
+      if (data.pid === List[i].pid) {
+        List[i].isdone = true;
       }
+    }
 
-      localStorage.setItem('fcfsResult',JSON.stringify(List));
+    localStorage.setItem("fcfsResult", JSON.stringify(List));
 
-
-      setReadyQueue(readyQueue1);
-      // adjustReadyQueue();
-      
+    setReadyQueue(readyQueue1);
+    // adjustReadyQueue();
   };
 
-   
+  useEffect(() => {
+    fillReadyQueue(globleTime);
+  }, []);
+
   return (
     <div
       style={{
@@ -243,28 +232,46 @@ function Visualize() {
             }}
           >
             {/* processes */}
-            {ganttChart.map((process)=>{
-              return(
+            {ganttChart.map((process) => {
+              return (
                 <>
-                <h5
+                  <Popup
+                    trigger={
+                      <h5
+                        style={{
+                          width: "3rem",
+                          minWidth: "3rem",
+                          flexWrap: "wrap",
+                          height: "85%",
+                          backgroundColor: "#5454c1",
+                          margin: "auto 0.25rem",
+                          borderRadius: "0.2rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        P{process.pid}
+                      </h5>
+                    }
+                    position="right center"
+                  >
+                    <div
                       style={{
-                        width: "3rem",
-                        minWidth: "3rem",
-                        flexWrap: "wrap",
-                        height: "85%",
-                        backgroundColor: "#5454c1",
-                        margin: "auto 0.25rem",
-                        borderRadius: "0.2rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        color: "#c8c80c",
+                        fontWeight:"600",
+                        backgroundColor: "#000000cc",
+                        padding: "1rem 1rem",
+                        margin: "0rem 0rem",
+                        borderRadius:"0.4rem"
                       }}
                     >
-                      P{process.pid}
-                    </h5>
+                     <h6>StartTime:{process.startTime}</h6>
+                     <h6>EndTime:{process.endTime}</h6>
+                    </div>
+                  </Popup>
                 </>
-              )
-
+              );
             })}
           </div>
         </div>
