@@ -1,15 +1,50 @@
 import React, { useEffect, useState } from "react";
 
 function Visualize() {
-  const [ globleTime  ,setglobleTime ] = useState(0) ;
+  const [globleTime, setglobleTime] = useState(0);
   const [readyQueue, setReadyQueue] = useState([]);
   const [ganttChart, setganttChart] = useState([]);
   const [process, setProcess] = useState();
+  const [instance, setInstance] = useState([]);
 
   const changeTime = (increment) => {
-    const newglobleTime = globleTime + increment;
-    setglobleTime(newglobleTime);
-    fillReadyQueue(newglobleTime);
+    if (increment > 0) {
+      const newglobleTime = globleTime + increment;
+      setglobleTime(newglobleTime);
+      fillReadyQueue(newglobleTime);
+
+      const currentInstance = {
+        globleTime: globleTime,
+        readyQueue: readyQueue,
+        ganttChart: ganttChart,
+        process: process,
+      };
+
+      setInstance((prevInstance) => [...prevInstance, currentInstance]);
+      console.log("current instance : --->", instance);
+      return;
+    } else {
+      const newglobleTime = globleTime + increment;
+      if (newglobleTime < 0) {
+        return;
+      }
+
+      if (instance.length > 1) {
+        const previousStateInstance = instance[instance.length - 2];
+
+        setglobleTime(previousStateInstance.globleTime);
+        setReadyQueue(previousStateInstance.readyQueue);
+        setganttChart(previousStateInstance.ganttChart);
+        setProcess(previousStateInstance.process);
+
+        localStorage.setItem("fcfsResult", JSON.stringify(readyQueue));
+
+        setInstance((prevInstance) => {
+          const newInstance = prevInstance.slice(0, -1);
+          return newInstance;
+        });
+      }
+    }
   };
 
   const fillReadyQueue = (time) => {
@@ -23,29 +58,20 @@ function Visualize() {
   };
 
   const HandleProcess = (readyQueue) => {
-
-    console.log("Process",process);
+    console.log("Process", process);
 
     if (process) {
       const data = process;
       data.remainTime--;
 
-
-      if ( data.remainTime <= 0) {
-
+      if (data.remainTime <= 0) {
         setProcess();
         setganttChart((prevGanttChart) => [...prevGanttChart, data]);
 
-
         if (readyQueue.length !== 0) {
           AddTOProcess(readyQueue);
-        }  
-
-
-      }  
-
-
-
+        }
+      }
     } else {
       if (readyQueue.length !== 0) {
         AddTOProcess(readyQueue);
@@ -56,32 +82,28 @@ function Visualize() {
   };
 
   const AddTOProcess = (readyQueue1) => {
-     
-       
-      const data =  readyQueue1[0];
-      data.remainTime  = data.burstTime;
-      setProcess(data);
-      // Filter out the first element
-      readyQueue1.shift();
+    const data = readyQueue1[0];
+    data.remainTime = data.burstTime;
+    setProcess(data);
+    // Filter out the first element
+    readyQueue1.shift();
 
-      const List = JSON.parse(localStorage.getItem('fcfsResult'));
-      for(let i=0;i<List.length;i++)
-      {
-        if(data.pid===List[i].pid)
-        {
-           List[i].isdone=true;
-        }
+    const List = JSON.parse(localStorage.getItem("fcfsResult"));
+    for (let i = 0; i < List.length; i++) {
+      if (data.pid === List[i].pid) {
+        List[i].isdone = true;
       }
+    }
 
-      localStorage.setItem('fcfsResult',JSON.stringify(List));
+    localStorage.setItem("fcfsResult", JSON.stringify(List));
 
-
-      setReadyQueue(readyQueue1);
-      // adjustReadyQueue();
-      
+    setReadyQueue(readyQueue1);
+    // adjustReadyQueue();
   };
 
-   
+  useEffect(() => {
+  }, [globleTime, readyQueue, ganttChart, process, instance]);
+  
   return (
     <div
       style={{
@@ -243,28 +265,27 @@ function Visualize() {
             }}
           >
             {/* processes */}
-            {ganttChart.map((process)=>{
-              return(
+            {ganttChart.map((process) => {
+              return (
                 <>
-                <h5
-                      style={{
-                        width: "3rem",
-                        minWidth: "3rem",
-                        flexWrap: "wrap",
-                        height: "85%",
-                        backgroundColor: "#5454c1",
-                        margin: "auto 0.25rem",
-                        borderRadius: "0.2rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      P{process.pid}
-                    </h5>
+                  <h5
+                    style={{
+                      width: "3rem",
+                      minWidth: "3rem",
+                      flexWrap: "wrap",
+                      height: "85%",
+                      backgroundColor: "#5454c1",
+                      margin: "auto 0.25rem",
+                      borderRadius: "0.2rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    P{process.pid}
+                  </h5>
                 </>
-              )
-
+              );
             })}
           </div>
         </div>
