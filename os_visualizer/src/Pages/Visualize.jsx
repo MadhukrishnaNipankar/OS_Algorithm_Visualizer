@@ -1,43 +1,87 @@
 import React, { useEffect, useState } from "react";
 
 function Visualize() {
-  const [globleTime, setGlobleTime] = useState(0);
+  const [ globleTime  ,setglobleTime ] = useState(0) ;
   const [readyQueue, setReadyQueue] = useState([]);
   const [ganttChart, setganttChart] = useState([]);
+  const [process, setProcess] = useState();
 
-  const changeTime = async (increment) => {
-    const newTime = globleTime + increment;
-    await setGlobleTime(newTime);
-    fillReadyQueue(newTime);
+  const changeTime = (increment) => {
+    const newglobleTime = globleTime + increment;
+    setglobleTime(newglobleTime);
+    fillReadyQueue(newglobleTime);
   };
 
   const fillReadyQueue = (time) => {
     const data = JSON.parse(localStorage.getItem("fcfsResult"));
     data.sort((a, b) => a.arrivalTime - b.arrivalTime);
-
-    const newReadyQueue = data.filter((item) => item.arrivalTime <= time);
+    const newReadyQueue = data.filter(
+      (item) => item.arrivalTime <= time && !item.isdone
+    );
     setReadyQueue(newReadyQueue);
+    HandleProcess(newReadyQueue);
   };
 
-  useEffect(() => {
-    fillReadyQueue(globleTime);
-  }, [globleTime]);
+  const HandleProcess = (readyQueue) => {
 
-  // const fillReadyQueue = () => {
-  //   const data = JSON.parse(localStorage.getItem("fcfsResult"));
-  //   data.sort((a,b)=>(a.arrivalTime-b.arrivalTime));
-  //   setReadyQueue([]);
+    console.log("Process",process);
 
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].arrivalTime <= globleTime) {
+    if (process) {
+      const data = process;
+      data.remainTime--;
 
-  //        setReadyQueue([...readyQueue, data[i]]);
-  //     }
-  //   }
 
-  //   console.log(globleTime,readyQueue);
-  // };
+      if ( data.remainTime <= 0) {
 
+        setProcess();
+        setganttChart((prevGanttChart) => [...prevGanttChart, data]);
+
+
+        if (readyQueue.length !== 0) {
+          AddTOProcess(readyQueue);
+        }  
+
+
+      }  
+
+
+
+    } else {
+      if (readyQueue.length !== 0) {
+        AddTOProcess(readyQueue);
+      } else {
+        setProcess();
+      }
+    }
+  };
+
+  const AddTOProcess = (readyQueue1) => {
+     
+       
+      const data =  readyQueue1[0];
+      data.remainTime  = data.burstTime;
+      setProcess(data);
+      // Filter out the first element
+      readyQueue1.shift();
+
+      const List = JSON.parse(localStorage.getItem('fcfsResult'));
+      for(let i=0;i<List.length;i++)
+      {
+        if(data.pid===List[i].pid)
+        {
+           List[i].isdone=true;
+        }
+      }
+
+      localStorage.setItem('fcfsResult',JSON.stringify(List));
+
+
+      setReadyQueue(readyQueue1);
+      // adjustReadyQueue();
+      
+  };
+
+   
   return (
     <div
       style={{
@@ -109,7 +153,15 @@ function Visualize() {
                   justifyContent: "center",
                 }}
               >
-                1
+                {process ? (
+                  <>
+                    <p>P{process.pid}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Idle</p>
+                  </>
+                )}
               </h5>
             </h4>
           </div>
@@ -191,90 +243,29 @@ function Visualize() {
             }}
           >
             {/* processes */}
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
-            <h5
-              style={{
-                width: "3rem",
-                height: "85%",
-                backgroundColor: "#5454c1",
-                margin: "auto 0.25rem",
-                borderRadius: "0.2rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              1
-            </h5>
+            {ganttChart.map((process)=>{
+              return(
+                <>
+                <h5
+                      style={{
+                        width: "3rem",
+                        minWidth: "3rem",
+                        flexWrap: "wrap",
+                        height: "85%",
+                        backgroundColor: "#5454c1",
+                        margin: "auto 0.25rem",
+                        borderRadius: "0.2rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      P{process.pid}
+                    </h5>
+                </>
+              )
+
+            })}
           </div>
         </div>
         {/* Gantt Chart End */}

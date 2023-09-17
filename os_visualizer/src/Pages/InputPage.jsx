@@ -20,6 +20,8 @@ function InputPage() {
     endTime: 0,
     remainTime: 0,
     turnAroundTime: 0,
+    isdone:false,
+    isin:false,
   });
 
   useEffect(() => {
@@ -52,6 +54,8 @@ function InputPage() {
       endTime: 0,
       remainTime: 0,
       turnAroundTime: 0,
+      isdone:false,
+      isin:false,
     });
   };
 
